@@ -1,0 +1,8 @@
+GET
+localhost:8080/songs
+lub
+localhost:8080/songs/100
+lub
+localhost:8080/songs?id=100
+lub
+localhost:8080/songs header "requestId:1000001"

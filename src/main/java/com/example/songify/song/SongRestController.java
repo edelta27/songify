@@ -1,6 +1,6 @@
-package com.example.songify;
+package com.example.songify.song;
 
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.log4j.Log4j2;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Log4j2
-public class SongsController {
+public class SongRestController {
 
     Map<Integer, String> database = new HashMap<>(Map.of(
             1, "shawnmendes song1",
@@ -43,7 +43,7 @@ public class SongsController {
     }
 
     @PostMapping("/songs")
-    public ResponseEntity<SingleSongResponseDto> postSong(@RequestBody SongRequestDto request){
+    public ResponseEntity<SingleSongResponseDto> postSong(@RequestBody @Valid SongRequestDto request){
         String songName = request.songName();
         log.info("adding new song: " + songName);
         database.put(database.size() + 1, songName);

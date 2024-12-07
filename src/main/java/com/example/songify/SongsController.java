@@ -7,23 +7,25 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Log4j2
 public class SongsController {
 
-    Map<Integer, String> database = new HashMap<>();
+    Map<Integer, String> database = new HashMap<>(Map.of(
+            1, "shawnmendes song1",
+            2, "ariana grande spong2"
+    ));
 
     @GetMapping("/songs")
-    public ResponseEntity<SongResponseDto> getAllSongs(@RequestParam(required = false) Integer id){
-        database.put(1, "shawnmendes song1");
-        database.put(2, "ariana grande spong2");
-        if(id != null) {
-            String song = database.get(id);
-            if(song == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            SongResponseDto response = new SongResponseDto(Map.of(id, song));
+    public ResponseEntity<SongResponseDto> getAllSongs(@RequestParam(required = false) Integer limit){
+        if(limit != null) {
+            Map<Integer, String> limitedMap = database.entrySet()
+                    .stream()
+                    .limit(limit)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            SongResponseDto response = new SongResponseDto(limitedMap);
             return ResponseEntity.ok(response);
         }
         SongResponseDto response = new SongResponseDto(database);

@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>23</java.version>
+		<java.version>17</java.version>
 		<swagger.version>2.0.2</swagger.version>
 	</properties>
 	<dependencies>

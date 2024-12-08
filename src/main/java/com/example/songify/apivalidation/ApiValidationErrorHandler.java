@@ -1,6 +1,6 @@
 package com.example.songify.apivalidation;
 
-import com.example.songify.song.SongRestController;
+import com.example.songify.song.controller.SongRestController;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;

@@ -1,5 +1,10 @@
-package com.example.songify.song;
+package com.example.songify.song.controller;
 
+import com.example.songify.song.dto.DeleteSongResponseDto;
+import com.example.songify.song.dto.SingleSongResponseDto;
+import com.example.songify.song.dto.SongRequestDto;
+import com.example.songify.song.dto.SongResponseDto;
+import com.example.songify.song.error.SongNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +59,10 @@ public class SongRestController {
     @DeleteMapping("/songs/{id}")
     public ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Integer id){
         if(!database.containsKey(id)){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new DeleteSongResponseDto("Song with id " + id + " not found", HttpStatus.NOT_FOUND));
+            throw new SongNotFoundException("Song with id " + id + " not found");
+
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(new ErrorDeleteSongResponseDto("Song with id " + id + " not found", HttpStatus.NOT_FOUND));
         }
         database.remove(id);
         return ResponseEntity.ok(new DeleteSongResponseDto("You deleted song with id: " + id, HttpStatus.OK));

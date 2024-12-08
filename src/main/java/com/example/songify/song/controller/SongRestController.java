@@ -40,10 +40,10 @@ public class SongRestController {
     @GetMapping("/songs/{id}")
     public ResponseEntity<SingleSongResponseDto> getSongByID(@PathVariable Integer id, @RequestHeader(required = false) String requestId){
         log.info(requestId);
-        String song = database.get(id);
-        if (song == null) {
-            return ResponseEntity.notFound().build();
+        if(!database.containsKey(id)){
+            throw new SongNotFoundException("Song with id " + id + " not found");
         }
+        String song = database.get(id);
         SingleSongResponseDto response = new SingleSongResponseDto(song);
         return ResponseEntity.ok(response);
     }
@@ -60,9 +60,6 @@ public class SongRestController {
     public ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Integer id){
         if(!database.containsKey(id)){
             throw new SongNotFoundException("Song with id " + id + " not found");
-
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new ErrorDeleteSongResponseDto("Song with id " + id + " not found", HttpStatus.NOT_FOUND));
         }
         database.remove(id);
         return ResponseEntity.ok(new DeleteSongResponseDto("You deleted song with id: " + id, HttpStatus.OK));

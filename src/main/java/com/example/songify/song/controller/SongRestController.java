@@ -1,11 +1,9 @@
 package com.example.songify.song.controller;
 
+import com.example.songify.song.dto.request.PartiallyUpdateSongRequstDto;
 import com.example.songify.song.dto.request.SongRequestDto;
 import com.example.songify.song.dto.request.UpdateSongRequestDto;
-import com.example.songify.song.dto.response.DeleteSongResponseDto;
-import com.example.songify.song.dto.response.SingleSongResponseDto;
-import com.example.songify.song.dto.response.SongResponseDto;
-import com.example.songify.song.dto.response.UpdateSongResponseDto;
+import com.example.songify.song.dto.response.*;
 import com.example.songify.song.error.SongNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -83,5 +81,30 @@ public class SongRestController {
                 " oldArtist: " + oldSong.artist() + " to newArtist: " + newSong.artist()
         );
         return ResponseEntity.ok(new UpdateSongResponseDto(newSong.name(), newSong.artist()));
+    }
+
+    @PatchMapping("/songs/{id}")
+    public ResponseEntity<PartiallyUpdateSongResponseDto> partiallyUpdateSong(@PathVariable Integer id,
+                                                                              @RequestBody PartiallyUpdateSongRequstDto request){
+        if (!database.containsKey(id)){
+            throw new SongNotFoundException("Song with id " + id + " not found");
+        }
+        Song songFromDatabase = database.get(id);
+        Song.SongBuilder builder = Song.builder();
+        if(request.songName() != null){
+            builder.name(request.songName());
+            log.info("partially updated song name");
+        } else {
+            builder.name(songFromDatabase.name());
+        }
+        if(request.artist() != null){
+            builder.artist(request.artist());
+            log.info("partially updated artist");
+        } else {
+            builder.artist(songFromDatabase.artist());
+        }
+        Song updatedSong = builder.build();
+        database.put(id, updatedSong);
+        return ResponseEntity.ok(new PartiallyUpdateSongResponseDto(updatedSong));
     }
 }
